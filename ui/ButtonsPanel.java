@@ -7,10 +7,10 @@ public class ButtonsPanel extends JPanel {
     public ButtonsPanel() {
         setLayout(null);
         // Create and add buttons
-        JButton fcfsButton = new JButton("FCFS");
-        JButton SJFButton = new JButton("SJF");
-        JButton priorityButton = new JButton("Priority");
-        JButton roundRobinButton = new JButton("Round Robin");
+        Button fcfsButton = new Button("FCFS");
+        Button SJFButton = new Button("SJF");
+        Button priorityButton = new Button("Priority");
+        Button roundRobinButton = new Button("Round Robin");
         fcfsButton.setBounds(50, 0, 150, 30);
         SJFButton.setBounds(50, 50, 150, 30);
         priorityButton.setBounds(50, 100, 150, 30);

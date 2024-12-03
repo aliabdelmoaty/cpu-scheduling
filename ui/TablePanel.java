@@ -1,6 +1,8 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
+
 import java.awt.*;
 
 public class TablePanel extends JPanel {
@@ -22,11 +24,16 @@ public class TablePanel extends JPanel {
 
         // Create the JTable
         JTable table = new JTable(data, columnNames);
-
+        table.getTableHeader().setResizingAllowed(false);
+        table.getTableHeader().setReorderingAllowed(false);
+        table.setRowHeight(20);
+        JTableHeader header = table.getTableHeader();
+        header.setBackground(Color.black);
+        header.setForeground(Color.white);
         // Wrap JTable in a JScrollPane
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(0, 0, 720, 300);
-        
+
         setPreferredSize(new Dimension(720, 300));
         // Add the scroll pane to the panel
         add(scrollPane);
