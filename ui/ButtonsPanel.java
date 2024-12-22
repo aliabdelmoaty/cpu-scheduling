@@ -49,6 +49,9 @@ public class ButtonsPanel extends JPanel {
                     case "SRT":
                         SRT.schedule(processes);
                         break;
+                    case "Priority":
+                        PSN.schedule(processes);
+                        break;
                     case "Round Robin":
                         String input = JOptionPane.showInputDialog(
                             this,
@@ -88,6 +91,7 @@ public class ButtonsPanel extends JPanel {
         // Add the listener to all buttons
         fcfsButton.addActionListener(algorithmListener);
         SJFButton.addActionListener(algorithmListener);
+        priorityButton.addActionListener(algorithmListener);
         srtButton.addActionListener(algorithmListener);
         roundRobinButton.addActionListener(algorithmListener);
         // ... add to other buttons
