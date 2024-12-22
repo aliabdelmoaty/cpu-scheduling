@@ -49,7 +49,29 @@ public class ButtonsPanel extends JPanel {
                     case "SRT":
                         SRT.schedule(processes);
                         break;
-                    // ... other cases
+                    case "Round Robin":
+                        String input = JOptionPane.showInputDialog(
+                            this,
+                            "Enter time quantum:",
+                            "Round Robin",
+                            JOptionPane.QUESTION_MESSAGE);
+                        if (input != null && !input.trim().isEmpty()) {
+                            try {
+                                int quantum = Integer.parseInt(input.trim());
+                                if (quantum > 0) {
+                                    RoundRobin.schedule(processes, quantum);
+                                } else {
+                                    JOptionPane.showMessageDialog(this, "Quantum must be positive");
+                                    return;
+                                }
+                            } catch (NumberFormatException ex) {
+                                JOptionPane.showMessageDialog(this, "Invalid quantum value");
+                                return;
+                            }
+                        } else {
+                            return;
+                        }
+                        break;
                 }
 
                 // Calculate results and update UI
@@ -67,6 +89,7 @@ public class ButtonsPanel extends JPanel {
         fcfsButton.addActionListener(algorithmListener);
         SJFButton.addActionListener(algorithmListener);
         srtButton.addActionListener(algorithmListener);
+        roundRobinButton.addActionListener(algorithmListener);
         // ... add to other buttons
     }
 

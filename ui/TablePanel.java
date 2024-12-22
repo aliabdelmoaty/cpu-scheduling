@@ -194,7 +194,7 @@ public class TablePanel extends JPanel {
                 int burstTime = Integer.parseInt(row.get(2).toString());
                 int priority = Integer.parseInt(row.get(3).toString());
                 
-                // Validate input
+                // Validate input                       
                 if (arrivalTime < 0) throw new IllegalArgumentException("Arrival time cannot be negative");
                 if (burstTime <= 0) throw new IllegalArgumentException("Burst time must be positive");
                 if (priority < 0) throw new IllegalArgumentException("Priority cannot be negative");
