@@ -1,62 +1,116 @@
 package ui;
 
+import algorithms.*;
 import javax.swing.*;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import algorithms.Process;
 
 public class ButtonsPanel extends JPanel {
-    public ButtonsPanel(TablePanel tablePanel, AverageWaitPanel avgWaitPanel) {
-        
+
+    public ButtonsPanel(TablePanel tablePanel, AverageWaitPanel avgWaitPanel, ProcessGanttChart ganttChartPanel) {
         setLayout(null);
         Button fcfsButton = new Button("FCFS");
         Button SJFButton = new Button("SJF");
         Button priorityButton = new Button("Priority");
         Button roundRobinButton = new Button("Round Robin");
+        Button srtButton = new Button("SRT");
+
         fcfsButton.setBounds(50, 0, 150, 30);
         SJFButton.setBounds(50, 50, 150, 30);
         priorityButton.setBounds(50, 100, 150, 30);
         roundRobinButton.setBounds(50, 150, 150, 30);
-        fcfsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Process[] processes = { tablePanel.p1, tablePanel.p2, tablePanel.p3, tablePanel.p4 };
-                int currentTime = 0;
-                int totalWaitingTime = 0;
-                int totalTurnaroundTime = 0;
+        srtButton.setBounds(50, 200, 150, 30);
 
-                for (int i = 0; i < processes.length; i++) {
-                    Process process = processes[i];
-                    int startTime = Math.max(currentTime, process.getArrivalTime());
-                    process.setStartTime(startTime);
-                    int endTime = startTime + process.getBurstTime();
-                    process.setEndTime(endTime);
-                    process.setTurnaroundTime(endTime - process.getArrivalTime());
-
-                    int waitingTime = process.getStartTime() - process.getArrivalTime();
-                    totalWaitingTime += waitingTime;
-                    totalTurnaroundTime += process.getTurnaroundTime();
-
-                    currentTime = endTime;
-
-                }
-
-                int numberOfProcesses = processes.length;
-                double averageWaitingTime = (double) totalWaitingTime / numberOfProcesses;
-                double averageTurnaroundTime = (double) totalTurnaroundTime / numberOfProcesses;
-
-                tablePanel.refreshTable();
-                avgWaitPanel.setAverageWaitTime(averageWaitingTime);
-                avgWaitPanel.setAverageTurnaroundTime(averageTurnaroundTime);
-
-            }
-        });  
         setPreferredSize(new Dimension(960, 300));
         add(SJFButton);
         add(priorityButton);
         add(roundRobinButton);
         add(fcfsButton);
+        add(srtButton);
+
+        // Update action listeners to include error handling
+        ActionListener algorithmListener = e -> {
+            try {
+                Process[] processes = tablePanel.getProcesses();
+                if (processes.length == 0) {
+                    JOptionPane.showMessageDialog(this, "Please add processes first");
+                    return;
+                }
+
+                // Execute selected algorithm
+                switch (e.getActionCommand()) {
+                    case "FCFS":
+                        FCFS.schedule(processes);
+                        break;
+                    case "SJF":
+                        SJF.schedule(processes);
+                        break;
+                    case "SRT":
+                        SRT.schedule(processes);
+                        break;
+                    // ... other cases
+                }
+
+                // Calculate results and update UI
+                updateResults(processes, tablePanel, avgWaitPanel, ganttChartPanel);
+                
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,
+                    "Error during scheduling: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        };
+
+        // Add the listener to all buttons
+        fcfsButton.addActionListener(algorithmListener);
+        SJFButton.addActionListener(algorithmListener);
+        srtButton.addActionListener(algorithmListener);
+        // ... add to other buttons
+    }
+
+    private void updateResults(Process[] processes, TablePanel tablePanel, 
+                             AverageWaitPanel avgWaitPanel, ProcessGanttChart ganttChartPanel) {
+        try {
+            int totalWaitingTime = 0;
+            int totalTurnaroundTime = 0;
+            
+            for (Process p : processes) {
+                totalWaitingTime += p.calculateWaitingTime();
+                totalTurnaroundTime += p.getTurnaroundTime();
+            }
+
+            // Update visualization
+            ganttChartPanel.updateChart(processes);
+
+            // Update results
+            calculateAndDisplayResults(processes, totalWaitingTime,
+                    totalTurnaroundTime, tablePanel, avgWaitPanel);
+                    
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                "Error updating results: " + ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Helper method to calculate and display results
+    private void calculateAndDisplayResults(Process[] processes,
+            int totalWaitingTime,
+            int totalTurnaroundTime,
+            TablePanel tablePanel,
+            AverageWaitPanel avgWaitPanel) {
+        // Just refresh the table since data is already updated
+        tablePanel.refreshTable();
+
+        // Calculate and set average times
+        int numberOfProcesses = processes.length;
+        double averageWaitingTime = (double) totalWaitingTime / numberOfProcesses;
+        double averageTurnaroundTime = (double) totalTurnaroundTime / numberOfProcesses;
+
+        avgWaitPanel.setAverageWaitTime(averageWaitingTime);
+        avgWaitPanel.setAverageTurnaroundTime(averageTurnaroundTime);
     }
 }
