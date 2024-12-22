@@ -110,20 +110,29 @@ public class ButtonsPanel extends JPanel {
             int totalWaitingTime = 0;
             int totalTurnaroundTime = 0;
             
+            // Update the processes list in TablePanel with the scheduled processes
+            tablePanel.updateProcesses(processes);
+            
             for (Process p : processes) {
-                totalWaitingTime += p.calculateWaitingTime();
+                totalWaitingTime += p.getWaitingTime();
                 totalTurnaroundTime += p.getTurnaroundTime();
             }
 
             // Update visualization
             ganttChartPanel.updateChart(processes);
-
-            // Update results
-            calculateAndDisplayResults(processes, totalWaitingTime,
-                    totalTurnaroundTime, tablePanel, avgWaitPanel);
-                    
+            
+            // Calculate and display averages
+            double avgWaitTime = (double) totalWaitingTime / processes.length;
+            double avgTurnaroundTime = (double) totalTurnaroundTime / processes.length;
+            
+            avgWaitPanel.setAverageWaitTime(avgWaitTime);
+            avgWaitPanel.setAverageTurnaroundTime(avgTurnaroundTime);
+            
+            // Refresh the table to show updated values
+            tablePanel.refreshTable();
+            
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(null,
                 "Error updating results: " + ex.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
