@@ -15,12 +15,14 @@ public class ButtonsPanel extends JPanel {
         Button priorityButton = new Button("Priority");
         Button roundRobinButton = new Button("Round Robin");
         Button srtButton = new Button("SRT");
+        Button pspButton = new Button("PSP");  // Add new PSP button
 
         fcfsButton.setBounds(50, 0, 150, 30);
         SJFButton.setBounds(50, 50, 150, 30);
         priorityButton.setBounds(50, 100, 150, 30);
         roundRobinButton.setBounds(50, 150, 150, 30);
         srtButton.setBounds(50, 200, 150, 30);
+        pspButton.setBounds(50, 250, 150, 30);  // Position the new button
 
         setPreferredSize(new Dimension(960, 300));
         add(SJFButton);
@@ -28,6 +30,7 @@ public class ButtonsPanel extends JPanel {
         add(roundRobinButton);
         add(fcfsButton);
         add(srtButton);
+        add(pspButton);  // Add the new button
 
         // Update action listeners to include error handling
         ActionListener algorithmListener = e -> {
@@ -75,6 +78,9 @@ public class ButtonsPanel extends JPanel {
                             return;
                         }
                         break;
+                    case "PSP":
+                        PSP.schedule(processes);
+                        break;
                 }
 
                 // Calculate results and update UI
@@ -94,6 +100,7 @@ public class ButtonsPanel extends JPanel {
         priorityButton.addActionListener(algorithmListener);
         srtButton.addActionListener(algorithmListener);
         roundRobinButton.addActionListener(algorithmListener);
+        pspButton.addActionListener(algorithmListener);
         // ... add to other buttons
     }
 
